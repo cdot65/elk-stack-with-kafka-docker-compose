@@ -1,0 +1,52 @@
+---
+version: "3"
+services:
+  logstash:
+    build:
+      context: ./
+      dockerfile: ./logstash/Dockerfile
+    image: "registry.gitlab.com/cremsburg/elk-container-repo/elk:logstash"
+    container_name: logstash
+    restart: always
+    ports:
+      - "514:514/udp"
+      - "5514:5514/udp"
+      - "5000:5000"
+      - "5001:5001"
+      - "9600:9600"
+    env_file:
+      - ./logstash/env
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/config/pipeline.conf:/usr/share/logstash/pipeline/pipeline.conf
+
+  elasticsearch:
+    build:
+      context: ./
+      dockerfile: ./elasticsearch/Dockerfile
+    image: "registry.gitlab.com/cremsburg/elk-container-repo/elk:elasticsearch"
+    container_name: elasticsearch
+    restart: always
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    env_file:
+      - ./elasticsearch/env
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elasticsearch/volume:/usr/share/elasticsearch/data
+
+  kibana:
+    build:
+      context: ./
+      dockerfile: ./kibana/Dockerfile
+    image: "registry.gitlab.com/cremsburg/elk-container-repo/elk:kibana"
+    container_name: kibana
+    restart: always
+    ports:
+      - "5601:5601"
+    env_file:
+      - ./kibana/env
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+
