@@ -62,4 +62,5 @@ def cleanup(context, docker_compose_file=DOCKER_COMPOSE_FILE):
 def logs(context, docker_compose_file=DOCKER_COMPOSE_FILE):
     context.run(
         f"docker-compose -f {docker_compose_file} logs -f",
+    pty=True,
     )
